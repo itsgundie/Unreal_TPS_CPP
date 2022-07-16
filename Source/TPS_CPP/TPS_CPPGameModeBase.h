@@ -13,5 +13,7 @@ UCLASS()
 class TPS_CPP_API ATPS_CPPGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	ATPS_CPPGameModeBase();
 };

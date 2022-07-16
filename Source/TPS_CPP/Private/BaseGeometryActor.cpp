@@ -31,6 +31,12 @@ void ABaseGeometryActor::BeginPlay()
 	// printStringTypes();
 }
 
+void ABaseGeometryActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	UE_LOG(LogBaseGeometry, Error, TEXT("Actor %s destroyed"), *GetName());
+	Super::EndPlay(EndPlayReason);
+}
+
 void ABaseGeometryActor::PrintTypes()
 {
 	UE_LOG(LogBaseGeometry, Warning, TEXT("Actor name %s"), *GetName());
@@ -114,12 +120,14 @@ void ABaseGeometryActor::OnTimerFired()
 		const FLinearColor NewColor = FLinearColor::MakeRandomColor();
 		UE_LOG(LogBaseGeometry, Display, TEXT("TimerCount: %i, MaxTimerCount: %i, New Generated Color is: %s"),
 			TimerCount, MaxTimerCount,  *NewColor.ToString());
-		SetColor(NewColor);	
+		SetColor(NewColor);
+		OnColorChanged.Broadcast(NewColor, GetName());
 	}
 	else
 	{
 		UE_LOG(LogBaseGeometry, Warning, TEXT("Timer has been stopped!"));
 		GetWorldTimerManager().ClearTimer(TimerHandle);
+		OnTimerFinished.Broadcast(this);
 	}
 }
 

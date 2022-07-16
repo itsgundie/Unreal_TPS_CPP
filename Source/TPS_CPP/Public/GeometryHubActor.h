@@ -34,6 +34,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void SpawnGeometryActors();
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ABaseGeometryActor> GeometryClass;
@@ -45,4 +46,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+private:
+	UFUNCTION()
+	void OnColorChanged(const FLinearColor& Color, const FString& Name);
+	void OnTimerFinished(AActor* Actor);
 };
