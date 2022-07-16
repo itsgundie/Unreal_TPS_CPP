@@ -2,6 +2,10 @@
 
 
 #include "BaseGeometryActor.h"
+#include "Engine/Engine.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "TimerManager.h"
+#include "Components/StaticMeshComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseGeometry, All, All)
 
@@ -18,12 +22,11 @@ void ABaseGeometryActor::BeginPlay()
 {
 	Super::BeginPlay();
 	FTransform Transform = GetActorTransform();
-	FVector Location = Transform.GetLocation();
-	FRotator Rotatation = Transform.Rotator();
-	FVector Scale = Transform.GetScale3D();
-
 	InitLocation = GetActorLocation();
-	PrintTransform();
+	SetColor(GeometryData.Color);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &ABaseGeometryActor::OnTimerFired, GeometryData.TimerRateSec, true);
+	
+	// PrintTransform();
 	// printTypes();
 	// printStringTypes();
 }
@@ -53,8 +56,11 @@ void ABaseGeometryActor::PrintStringTypes()
 	FString Stat = FString::Printf(TEXT("\nAll Stats:\n %s \n %s \n %s"), *WeaponsNumString, *HealthStr, *isAliveStr);
 	UE_LOG(LogBaseGeometry, Warning, TEXT("%s"), *Stat);
 
-	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, Name);
-	GEngine->AddOnScreenDebugMessage(-1, 8, FColor::Green, Stat, true, FVector2D(1.75f, 1.75f));
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, Name);
+		GEngine->AddOnScreenDebugMessage(-1, 8, FColor::Green, Stat, true, FVector2D(1.75f, 1.75f));
+	}
 }
 
 void ABaseGeometryActor::PrintTransform()
@@ -79,12 +85,41 @@ void ABaseGeometryActor::HandleMovement()
 	case EMovementType::Sin:
 		{
 			FVector CurrentLocation = GetActorLocation();
-			float Time = GetWorld()->GetTimeSeconds();
-			CurrentLocation.Z = InitLocation.Z + GeometryData.Amplitude * FMath::Sin(GeometryData.Frequency * Time);
-			SetActorLocation(CurrentLocation);
+			if (GetWorld())
+			{
+				float Time = GetWorld()->GetTimeSeconds();
+				CurrentLocation.Z = InitLocation.Z + GeometryData.Amplitude * FMath::Sin(GeometryData.Frequency * Time);
+				SetActorLocation(CurrentLocation);
+			}
 		}
 	case EMovementType::Static: break;
 	default: break;
+	}
+}
+
+void ABaseGeometryActor::SetColor(const FLinearColor& Color)
+{
+	if (!BaseMesh) return;
+	UMaterialInstanceDynamic* DynMaterial = BaseMesh->CreateAndSetMaterialInstanceDynamic(0);
+	if (DynMaterial)
+	{
+		DynMaterial->SetVectorParameterValue("Color", Color);
+	}
+}
+
+void ABaseGeometryActor::OnTimerFired()
+{
+	if (++TimerCount <= MaxTimerCount)
+	{
+		const FLinearColor NewColor = FLinearColor::MakeRandomColor();
+		UE_LOG(LogBaseGeometry, Display, TEXT("TimerCount: %i, MaxTimerCount: %i, New Generated Color is: %s"),
+			TimerCount, MaxTimerCount,  *NewColor.ToString());
+		SetColor(NewColor);	
+	}
+	else
+	{
+		UE_LOG(LogBaseGeometry, Warning, TEXT("Timer has been stopped!"));
+		GetWorldTimerManager().ClearTimer(TimerHandle);
 	}
 }
 
