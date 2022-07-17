@@ -10,44 +10,44 @@
 USTRUCT(BlueprintType)
 struct FGeometryPayload
 {
-	GENERATED_USTRUCT_BODY()
+    GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<ABaseGeometryActor> GeometryActorClass;
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<ABaseGeometryActor> GeometryActorClass;
 
-	UPROPERTY(EditAnywhere)
-	FGeometryData Data;
+    UPROPERTY(EditAnywhere)
+    FGeometryData Data;
 
-	UPROPERTY(EditAnywhere)
-	FTransform InitialTransform;
+    UPROPERTY(EditAnywhere)
+    FTransform InitialTransform;
 };
 
 UCLASS()
 class TPS_CPP_API AGeometryHubActor : public AActor
 {
-	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	AGeometryHubActor();
+    GENERATED_BODY()
+
+public:
+    // Sets default values for this actor's properties
+    AGeometryHubActor();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	void SpawnGeometryActors();
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
+    void SpawnGeometryActors();
 
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<ABaseGeometryActor> GeometryClass;
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<ABaseGeometryActor> GeometryClass;
 
-	UPROPERTY(EditAnywhere)
-	TArray<FGeometryPayload> GeometryPayloads;
+    UPROPERTY(EditAnywhere)
+    TArray<FGeometryPayload> GeometryPayloads;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+public:
+    // Called every frame
+    virtual void Tick(float DeltaTime) override;
 
 private:
-	UFUNCTION()
-	void OnColorChanged(const FLinearColor& Color, const FString& Name);
-	void OnTimerFinished(AActor* Actor);
+    UFUNCTION()
+    void OnColorChanged(const FLinearColor& Color, const FString& Name);
+    void OnTimerFinished(AActor* Actor);
 };
