@@ -11,26 +11,28 @@ DEFINE_LOG_CATEGORY_STATIC(LogSandboxPlayerController, All, All)
 
 void ASandboxPlayerController::SetupInputComponent()
 {
-	Super::SetupInputComponent();
-	if (InputComponent)
-	{
-		InputComponent->BindAction("SwitchPawn", IE_Pressed, this, &ASandboxPlayerController::SwitchPawn);
-	}
+    Super::SetupInputComponent();
+    if (InputComponent)
+    {
+        InputComponent->BindAction("SwitchPawn", IE_Pressed, this, &ASandboxPlayerController::SwitchPawn);
+    }
 }
 
 void ASandboxPlayerController::BeginPlay()
 {
-	Super::BeginPlay();
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASandboxPawn::StaticClass(), Pawns);
+    Super::BeginPlay();
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASandboxPawn::StaticClass(), Pawns);
 }
 
 void ASandboxPlayerController::SwitchPawn()
 {
-	if (Pawns.Num() <= 1) return;
-	ASandboxPawn* CurrentPawn = Cast<ASandboxPawn>(Pawns[CurrentPawnIndex]);
-	CurrentPawnIndex = (CurrentPawnIndex + 1) % Pawns.Num();
-	if (!CurrentPawn) return;
-	
-	UE_LOG(LogSandboxPlayerController, Error, TEXT("Player's Pawn has been Changed"));
-	Possess(CurrentPawn);
+    if (Pawns.Num() <= 1)
+        return;
+    ASandboxPawn* CurrentPawn = Cast<ASandboxPawn>(Pawns[CurrentPawnIndex]);
+    CurrentPawnIndex = (CurrentPawnIndex + 1) % Pawns.Num();
+    if (!CurrentPawn)
+        return;
+
+    UE_LOG(LogSandboxPlayerController, Error, TEXT("Player's Pawn has been Changed"));
+    Possess(CurrentPawn);
 }
