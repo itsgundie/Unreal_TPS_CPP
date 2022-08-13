@@ -4,12 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Camera/CameraComponent.h"
+#include "Components/TextRenderComponent.h"
+#include "Components/TPSHealthComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "TPSBaseCharacter.generated.h"
 
 class UCameraComponent;
 class USpringArmComponent;
+class UTPSHealthComponent;
+class UTextRenderComponent;
 
 UCLASS()
 class TPS_CPP_API ATPSBaseCharacter : public ACharacter
@@ -33,6 +37,12 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USpringArmComponent* SpringArmComponent;
+    
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UTPSHealthComponent* HealthComponent;
+    
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UTextRenderComponent* HealthTextComponent;
 public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;

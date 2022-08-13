@@ -6,6 +6,8 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/TPSCharacterMovementComponent.h"
+#include "Components/TPSHealthComponent.h"
+#include "Components/TextRenderComponent.h"
 
 // Sets default values
 ATPSBaseCharacter::ATPSBaseCharacter(const FObjectInitializer& ObjectInitializer)
@@ -13,11 +15,17 @@ ATPSBaseCharacter::ATPSBaseCharacter(const FObjectInitializer& ObjectInitializer
 {
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
+
     SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
     SpringArmComponent->SetupAttachment(GetRootComponent());
     SpringArmComponent->bUsePawnControlRotation = true;
+
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(SpringArmComponent);
+
+    HealthComponent = CreateDefaultSubobject<UTPSHealthComponent>("HealthComponent");
+    HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
+    HealthTextComponent->SetupAttachment(GetRootComponent());
 }
 
 bool ATPSBaseCharacter::isSprinting() const
@@ -40,12 +48,16 @@ float ATPSBaseCharacter::GetMovementDirection() const
 void ATPSBaseCharacter::BeginPlay()
 {
     Super::BeginPlay();
+    check(HealthComponent);
+    check(HealthTextComponent);
 }
 
 // Called every frame
 void ATPSBaseCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+    const auto Health = HealthComponent->GetHealth();
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
 
 // Called to bind functionality to input
