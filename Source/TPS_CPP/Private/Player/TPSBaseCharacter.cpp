@@ -9,6 +9,8 @@
 #include "Components/TPSHealthComponent.h"
 #include "Components/TextRenderComponent.h"
 
+DEFINE_LOG_CATEGORY_STATIC(TPSBaseCharacterLog, All, All);
+
 // Sets default values
 ATPSBaseCharacter::ATPSBaseCharacter(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer.SetDefaultSubobjectClass<UTPSCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
