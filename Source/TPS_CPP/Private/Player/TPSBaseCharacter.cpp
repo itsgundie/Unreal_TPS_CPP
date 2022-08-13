@@ -8,6 +8,7 @@
 #include "Components/TPSCharacterMovementComponent.h"
 #include "Components/TPSHealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "GameFramework/Controller.h"
 
 DEFINE_LOG_CATEGORY_STATIC(TPSBaseCharacterLog, All, All);
 
@@ -56,6 +57,8 @@ void ATPSBaseCharacter::BeginPlay()
     OnHealthChanged(HealthComponent->GetHealth());
     HealthComponent->OnDeath.AddUObject(this, &ATPSBaseCharacter::OnDeath);
     HealthComponent->OnHealthChanged.AddUObject(this, &ATPSBaseCharacter::OnHealthChanged);
+
+    LandedDelegate.AddDynamic(this, &ATPSBaseCharacter::OnGroundLanded);
 }
 
 // Called every frame
@@ -67,6 +70,7 @@ void ATPSBaseCharacter::Tick(float DeltaTime)
 // Called to bind functionality to input
 void ATPSBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+    check(PlayerInputComponent);
     Super::SetupPlayerInputComponent(PlayerInputComponent);
     PlayerInputComponent->BindAxis("MoveForward", this, &ATPSBaseCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ATPSBaseCharacter::MoveRight);
@@ -107,10 +111,26 @@ void ATPSBaseCharacter::OnDeath()
     UE_LOG(TPSBaseCharacterLog, Display, TEXT("Player %s is Dead"), *GetName());
     PlayAnimMontage(DeathAnimMontage);
     GetCharacterMovement()->DisableMovement();
-    SetLifeSpan(5.0f);
+    SetLifeSpan(LifeSpanOnDeath);
+    if (Controller)
+    {
+        Controller->ChangeState(NAME_Spectating);
+    }
 }
 
 void ATPSBaseCharacter::OnHealthChanged(float Health) const
 {
     HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+}
+
+void ATPSBaseCharacter::OnGroundLanded(const FHitResult& HitResult)
+{
+    const auto FallVelocityZ = -GetVelocity().Z;
+    UE_LOG(TPSBaseCharacterLog, Display, TEXT("On Landed: %f"), FallVelocityZ);
+
+    if (FallVelocityZ < LandedDamageVelocity.X) return;
+
+    const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
+    UE_LOG(TPSBaseCharacterLog, Display, TEXT("Final Damage: %f"), FinalDamage);
+    TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
 }
