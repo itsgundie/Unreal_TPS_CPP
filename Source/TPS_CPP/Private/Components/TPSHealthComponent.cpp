@@ -2,8 +2,9 @@
 
 
 #include "Components/TPSHealthComponent.h"
-
 #include "Player/TPSBaseCharacter.h"
+#include "Dev/TPSFireDamageType.h"
+#include "Dev/TPSIceDamageType.h"
 
 DEFINE_LOG_CATEGORY_STATIC(TPSHealthComponentLog, All, All);
 
@@ -30,4 +31,16 @@ void UTPSHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, co
 {
     Health -= Damage;
     UE_LOG(TPSHealthComponentLog, Display, TEXT("Damage: %f"), Damage);
+
+    if (DamageType)
+    {
+        if (DamageType->IsA<UTPSFireDamageType>())
+        {
+            UE_LOG(TPSHealthComponentLog, Display, TEXT("Burn, Baby, Burn!"));
+        }
+        else if (DamageType->IsA<UTPSIceDamageType>())
+        {
+            UE_LOG(TPSHealthComponentLog, Display, TEXT("You are Cold ass Ice, Baby!"));
+        }
+    }
 }

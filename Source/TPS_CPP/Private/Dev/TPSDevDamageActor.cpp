@@ -21,6 +21,6 @@ void ATPSDevDamageActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
     DrawDebugSphere(GetWorld(), GetActorLocation(), SphereRadius, 24, SphereColor);
-    UGameplayStatics::ApplyRadialDamage(GetWorld(), SphereDamage, GetActorLocation(), SphereRadius, nullptr, {}, this, nullptr, SphereDoFullDamage);
+    UGameplayStatics::ApplyRadialDamage(GetWorld(), SphereDamage, GetActorLocation(), SphereRadius, DamageType, {}, this, nullptr, SphereDoFullDamage);
 }
 
