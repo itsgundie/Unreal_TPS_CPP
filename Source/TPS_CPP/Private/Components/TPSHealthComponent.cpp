@@ -3,21 +3,19 @@
 
 #include "Components/TPSHealthComponent.h"
 #include "Player/TPSBaseCharacter.h"
-#include "Dev/TPSFireDamageType.h"
-#include "Dev/TPSIceDamageType.h"
 
 DEFINE_LOG_CATEGORY_STATIC(TPSHealthComponentLog, All, All);
 
 UTPSHealthComponent::UTPSHealthComponent()
 {
     PrimaryComponentTick.bCanEverTick = false;
-
 }
 
 void UTPSHealthComponent::BeginPlay()
 {
     Super::BeginPlay();
     Health = MaxHealth;
+    OnHealthChanged.Broadcast(Health);
 
     AActor* ComponentOwner = GetOwner();
     if (ComponentOwner)
@@ -29,18 +27,13 @@ void UTPSHealthComponent::BeginPlay()
 void UTPSHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy,
     AActor* DamageCauser)
 {
-    Health -= Damage;
-    UE_LOG(TPSHealthComponentLog, Display, TEXT("Damage: %f"), Damage);
+    if (Damage <= 0.0f || IsDead())
+        return;
+    Health = FMath::Clamp(Health - Damage, 0.0f, MaxHealth);
+    OnHealthChanged.Broadcast(Health);
 
-    if (DamageType)
+    if (IsDead())
     {
-        if (DamageType->IsA<UTPSFireDamageType>())
-        {
-            UE_LOG(TPSHealthComponentLog, Display, TEXT("Burn, Baby, Burn!"));
-        }
-        else if (DamageType->IsA<UTPSIceDamageType>())
-        {
-            UE_LOG(TPSHealthComponentLog, Display, TEXT("You are Cold ass Ice, Baby!"));
-        }
+        OnDeath.Broadcast();
     }
 }

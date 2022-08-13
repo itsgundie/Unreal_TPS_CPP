@@ -52,14 +52,16 @@ void ATPSBaseCharacter::BeginPlay()
     Super::BeginPlay();
     check(HealthComponent);
     check(HealthTextComponent);
+    check(GetCharacterMovement());
+    OnHealthChanged(HealthComponent->GetHealth());
+    HealthComponent->OnDeath.AddUObject(this, &ATPSBaseCharacter::OnDeath);
+    HealthComponent->OnHealthChanged.AddUObject(this, &ATPSBaseCharacter::OnHealthChanged);
 }
 
 // Called every frame
 void ATPSBaseCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    const auto Health = HealthComponent->GetHealth();
-    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
 
 // Called to bind functionality to input
@@ -98,4 +100,17 @@ void ATPSBaseCharacter::OnStartSprnting()
 void ATPSBaseCharacter::OnEndSprinting()
 {
     isGonnaSprint = false;
+}
+
+void ATPSBaseCharacter::OnDeath()
+{
+    UE_LOG(TPSBaseCharacterLog, Display, TEXT("Player %s is Dead"), *GetName());
+    PlayAnimMontage(DeathAnimMontage);
+    GetCharacterMovement()->DisableMovement();
+    SetLifeSpan(5.0f);
+}
+
+void ATPSBaseCharacter::OnHealthChanged(float Health) const
+{
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
