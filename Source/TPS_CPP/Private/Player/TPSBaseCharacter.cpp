@@ -23,6 +23,7 @@ ATPSBaseCharacter::ATPSBaseCharacter(const FObjectInitializer& ObjectInitializer
     SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
     SpringArmComponent->SetupAttachment(GetRootComponent());
     SpringArmComponent->bUsePawnControlRotation = true;
+    SpringArmComponent->SocketOffset = FVector(0.0f, 100.0f, 100.0f);
 
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(SpringArmComponent);
@@ -30,6 +31,7 @@ ATPSBaseCharacter::ATPSBaseCharacter(const FObjectInitializer& ObjectInitializer
     HealthComponent = CreateDefaultSubobject<UTPSHealthComponent>("HealthComponent");
     HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
     HealthTextComponent->SetupAttachment(GetRootComponent());
+    HealthTextComponent->SetOwnerNoSee(true);
 }
 
 bool ATPSBaseCharacter::isSprinting() const
