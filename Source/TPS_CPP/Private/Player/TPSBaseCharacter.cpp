@@ -9,6 +9,7 @@
 #include "Components/TPSHealthComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/Controller.h"
+#include "Weapon/TPSBaseWeapon.h"
 
 DEFINE_LOG_CATEGORY_STATIC(TPSBaseCharacterLog, All, All);
 
@@ -59,6 +60,8 @@ void ATPSBaseCharacter::BeginPlay()
     HealthComponent->OnHealthChanged.AddUObject(this, &ATPSBaseCharacter::OnHealthChanged);
 
     LandedDelegate.AddDynamic(this, &ATPSBaseCharacter::OnGroundLanded);
+
+    SpawnWeapon();
 }
 
 // Called every frame
@@ -133,4 +136,15 @@ void ATPSBaseCharacter::OnGroundLanded(const FHitResult& HitResult)
     const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
     UE_LOG(TPSBaseCharacterLog, Display, TEXT("Final Damage: %f"), FinalDamage);
     TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
+}
+
+void ATPSBaseCharacter::SpawnWeapon()
+{
+    if (!GetWorld()) return;
+    const auto Weapon = GetWorld()->SpawnActor<ATPSBaseWeapon>(WeaponClass);
+    if (Weapon)
+    {
+        FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
+        Weapon->AttachToComponent(GetMesh(), AttachmentRules, "WeaponSocket");
+    }
 }

@@ -8,12 +8,14 @@
 #include "Components/TPSHealthComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Weapon/TPSBaseWeapon.h"
 #include "TPSBaseCharacter.generated.h"
 
 class UCameraComponent;
 class USpringArmComponent;
 class UTPSHealthComponent;
 class UTextRenderComponent;
+class ATPSBaseWeapon;
 
 UCLASS()
 class TPS_CPP_API ATPSBaseCharacter : public ACharacter
@@ -46,7 +48,7 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "Damage")
     float LifeSpanOnDeath = 5.0f;
-    
+
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
     UAnimMontage* DeathAnimMontage;
 
@@ -56,6 +58,8 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Damage")
     FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
 
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    TSubclassOf<ATPSBaseWeapon> WeaponClass;
 public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
@@ -75,4 +79,6 @@ private:
 
     UFUNCTION()
     void OnGroundLanded(const FHitResult& HitResult);
+
+    void SpawnWeapon();
 };
