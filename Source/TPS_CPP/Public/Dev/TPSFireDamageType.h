@@ -7,11 +7,10 @@
 #include "TPSFireDamageType.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class TPS_CPP_API UTPSFireDamageType : public UDamageType
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
 };

@@ -1,11 +1,9 @@
 // TPS game made in UE4 with CPP and Blueprints
 
-
 #include "Components/TPSHealthComponent.h"
 #include "Player/TPSBaseCharacter.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
-
 
 DEFINE_LOG_CATEGORY_STATIC(TPSHealthComponentLog, All, All);
 
@@ -26,14 +24,13 @@ void UTPSHealthComponent::BeginPlay()
     }
 }
 
-void UTPSHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy,
-    AActor* DamageCauser)
+void UTPSHealthComponent::OnTakeAnyDamage(
+    AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
-    if (Damage <= 0.0f || IsDead() || !GetWorld())
-        return;
+    if (Damage <= 0.0f || IsDead() || !GetWorld()) return;
     SetHealth(Health - Damage);
     GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
-    
+
     if (IsDead())
     {
         OnDeath.Broadcast();
@@ -47,7 +44,7 @@ void UTPSHealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, co
 void UTPSHealthComponent::HealUpdate()
 {
     SetHealth(Health + HealRate);
-    if (FMath::IsNearlyEqual(Health,MaxHealth) && GetWorld())
+    if (FMath::IsNearlyEqual(Health, MaxHealth) && GetWorld())
     {
         GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
     }

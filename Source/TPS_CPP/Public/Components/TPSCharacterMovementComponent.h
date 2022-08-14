@@ -7,12 +7,12 @@
 #include "TPSCharacterMovementComponent.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class TPS_CPP_API UTPSCharacterMovementComponent : public UCharacterMovementComponent
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "1.1", ClampMax = "2.5"))

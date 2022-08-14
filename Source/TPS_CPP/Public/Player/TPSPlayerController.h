@@ -7,11 +7,10 @@
 #include "TPSPlayerController.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class TPS_CPP_API ATPSPlayerController : public APlayerController
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
 };

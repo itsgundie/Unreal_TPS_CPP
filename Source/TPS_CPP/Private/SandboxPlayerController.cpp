@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "SandboxPlayerController.h"
 
 #include "SandboxPawn.h"
@@ -26,12 +25,10 @@ void ASandboxPlayerController::BeginPlay()
 
 void ASandboxPlayerController::SwitchPawn()
 {
-    if (Pawns.Num() <= 1)
-        return;
+    if (Pawns.Num() <= 1) return;
     ASandboxPawn* CurrentPawn = Cast<ASandboxPawn>(Pawns[CurrentPawnIndex]);
     CurrentPawnIndex = (CurrentPawnIndex + 1) % Pawns.Num();
-    if (!CurrentPawn)
-        return;
+    if (!CurrentPawn) return;
 
     UE_LOG(LogSandboxPlayerController, Error, TEXT("Player's Pawn has been Changed"));
     Possess(CurrentPawn);

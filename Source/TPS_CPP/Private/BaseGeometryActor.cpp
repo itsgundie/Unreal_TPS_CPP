@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "BaseGeometryActor.h"
 #include "Engine/Engine.h"
 #include "Materials/MaterialInstanceDynamic.h"
@@ -106,8 +105,7 @@ void ABaseGeometryActor::HandleMovement()
 
 void ABaseGeometryActor::SetColor(const FLinearColor& Color)
 {
-    if (!BaseMesh)
-        return;
+    if (!BaseMesh) return;
     UMaterialInstanceDynamic* DynMaterial = BaseMesh->CreateAndSetMaterialInstanceDynamic(0);
     if (DynMaterial)
     {
@@ -120,8 +118,8 @@ void ABaseGeometryActor::OnTimerFired()
     if (++TimerCount <= MaxTimerCount)
     {
         const FLinearColor NewColor = FLinearColor::MakeRandomColor();
-        UE_LOG(LogBaseGeometry, Display, TEXT("TimerCount: %i, MaxTimerCount: %i, New Generated Color is: %s"),
-            TimerCount, MaxTimerCount, *NewColor.ToString());
+        UE_LOG(LogBaseGeometry, Display, TEXT("TimerCount: %i, MaxTimerCount: %i, New Generated Color is: %s"), TimerCount, MaxTimerCount,
+            *NewColor.ToString());
         SetColor(NewColor);
         OnColorChanged.Broadcast(NewColor, GetName());
     }

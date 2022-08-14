@@ -9,7 +9,7 @@
 DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSingnature, float);
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class TPS_CPP_API UTPSHealthComponent : public UActorComponent
 {
     GENERATED_BODY()
@@ -24,7 +24,7 @@ public:
     bool IsDead() const { return FMath::IsNearlyZero(Health); }
 
     float GetHealth() const { return Health; };
-    
+
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Health", meta = (ClampMin = "0", ClampMax = "1000"))
     float MaxHealth = 100.0f;
@@ -47,10 +47,10 @@ public:
 private:
     float Health = 0;
     FTimerHandle HealTimerHandle;
-    
+
     UFUNCTION()
-    void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy,
-        AActor* DamageCauser);
+    void OnTakeAnyDamage(
+        AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
     void HealUpdate();
     void SetHealth(float NewHealth);

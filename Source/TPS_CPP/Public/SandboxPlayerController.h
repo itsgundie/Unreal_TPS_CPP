@@ -7,7 +7,7 @@
 #include "SandboxPlayerController.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class TPS_CPP_API ASandboxPlayerController : public APlayerController
@@ -17,6 +17,7 @@ class TPS_CPP_API ASandboxPlayerController : public APlayerController
 protected:
     virtual void SetupInputComponent() override;
     virtual void BeginPlay() override;
+
 private:
     UPROPERTY()
     TArray<AActor*> Pawns;

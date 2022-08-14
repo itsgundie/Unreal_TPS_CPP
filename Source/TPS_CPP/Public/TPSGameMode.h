@@ -7,7 +7,7 @@
 #include "TPSGameMode.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class TPS_CPP_API ATPSGameMode : public AGameModeBase

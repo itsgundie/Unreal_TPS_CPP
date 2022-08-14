@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "GeometryHubActor.h"
 #include "Engine/World.h"
 
@@ -43,8 +42,8 @@ void AGeometryHubActor::SpawnGeometryActors()
         }
         for (const FGeometryPayload Payload : GeometryPayloads)
         {
-            ABaseGeometryActor* GeometryActor = World->SpawnActorDeferred<ABaseGeometryActor>(Payload.GeometryActorClass,
-                Payload.InitialTransform);
+            ABaseGeometryActor* GeometryActor =
+                World->SpawnActorDeferred<ABaseGeometryActor>(Payload.GeometryActorClass, Payload.InitialTransform);
             if (GeometryActor)
             {
                 GeometryActor->SetGeometryData(Payload.Data);
@@ -69,14 +68,12 @@ void AGeometryHubActor::OnColorChanged(const FLinearColor& Color, const FString&
 
 void AGeometryHubActor::OnTimerFinished(AActor* Actor)
 {
-    if (!Actor)
-        return;
+    if (!Actor) return;
     UE_LOG(LogGeometryHub, Error, TEXT("Timer finished for actor %s"), *Actor->GetName());
 
     ABaseGeometryActor* GeometryActor = Cast<ABaseGeometryActor>(Actor);
-    if (!GeometryActor)
-        return;
-    UE_LOG(LogGeometryHub, Display, TEXT("Upcast is succeded, Actor's final color is %s"),
-        *GeometryActor->GetGeometryData().Color.ToString());
+    if (!GeometryActor) return;
+    UE_LOG(
+        LogGeometryHub, Display, TEXT("Upcast is succeded, Actor's final color is %s"), *GeometryActor->GetGeometryData().Color.ToString());
     GeometryActor->SetLifeSpan(3.3f);
 }

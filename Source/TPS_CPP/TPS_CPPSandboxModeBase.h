@@ -7,7 +7,7 @@
 #include "TPS_CPPSandboxModeBase.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class TPS_CPP_API ATPS_CPPSandboxModeBase : public AGameModeBase

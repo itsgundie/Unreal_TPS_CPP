@@ -16,19 +16,19 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
     USceneComponent* SceneComponent;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float SphereRadius = 314.0f;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FColor SphereColor = FColor::Red;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float SphereDamage = 1.0f;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool SphereDoFullDamage = false;
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSubclassOf<UDamageType> DamageType;
 

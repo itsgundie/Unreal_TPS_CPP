@@ -9,7 +9,7 @@
 UCLASS()
 class TPS_CPP_API ATPSGameHUD : public AHUD
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 public:
     virtual void DrawHUD() override;
 

@@ -11,7 +11,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnColorChanged, const FLinearColor
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnTimerFinished, AActor*);
 
 UENUM(BlueprintType)
-enum class EMovementType: uint8
+enum class EMovementType : uint8
 {
     Sin,
     Static
@@ -85,6 +85,7 @@ protected:
 public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
+
 private:
     FVector InitLocation;
     FTimerHandle TimerHandle;

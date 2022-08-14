@@ -7,11 +7,10 @@
 #include "TPSIceDamageType.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class TPS_CPP_API UTPSIceDamageType : public UDamageType
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
 };
