@@ -30,4 +30,5 @@ void UTPSWeaponComponent::SpawnWeapon()
     if (!CurrentWeapon) return;
     FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
     CurrentWeapon->AttachToComponent(Character->GetMesh(), AttachmentRules, WeaponAttachSocketName);
+    CurrentWeapon->SetOwner(GetOwner());
 }
