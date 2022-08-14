@@ -3,19 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Camera/CameraComponent.h"
-#include "Components/TextRenderComponent.h"
-#include "Components/TPSHealthComponent.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Weapon/TPSBaseWeapon.h"
 #include "TPSBaseCharacter.generated.h"
 
 class UCameraComponent;
 class USpringArmComponent;
 class UTPSHealthComponent;
 class UTextRenderComponent;
-class ATPSBaseWeapon;
+class UTPSWeaponComponent;
 
 UCLASS()
 class TPS_CPP_API ATPSBaseCharacter : public ACharacter
@@ -31,6 +26,7 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Movement")
     float GetMovementDirection() const;
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
@@ -58,8 +54,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Damage")
     FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
 
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    TSubclassOf<ATPSBaseWeapon> WeaponClass;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UTPSWeaponComponent* WeaponComponent;
+
 public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
@@ -79,6 +76,4 @@ private:
 
     UFUNCTION()
     void OnGroundLanded(const FHitResult& HitResult);
-
-    void SpawnWeapon();
 };

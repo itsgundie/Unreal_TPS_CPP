@@ -1,6 +1,5 @@
 // TPS game made in UE4 with CPP and Blueprints
 
-
 #include "Player/TPSBaseCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
@@ -8,8 +7,8 @@
 #include "Components/TPSCharacterMovementComponent.h"
 #include "Components/TPSHealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "Components/TPSWeaponComponent.h"
 #include "GameFramework/Controller.h"
-#include "Weapon/TPSBaseWeapon.h"
 
 DEFINE_LOG_CATEGORY_STATIC(TPSBaseCharacterLog, All, All);
 
@@ -32,6 +31,8 @@ ATPSBaseCharacter::ATPSBaseCharacter(const FObjectInitializer& ObjectInitializer
     HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
     HealthTextComponent->SetupAttachment(GetRootComponent());
     HealthTextComponent->SetOwnerNoSee(true);
+
+    WeaponComponent = CreateDefaultSubobject<UTPSWeaponComponent>("WeaponComponent");
 }
 
 bool ATPSBaseCharacter::isSprinting() const
@@ -41,8 +42,7 @@ bool ATPSBaseCharacter::isSprinting() const
 
 float ATPSBaseCharacter::GetMovementDirection() const
 {
-    if (GetVelocity().IsZero())
-        return 0.0f;
+    if (GetVelocity().IsZero()) return 0.0f;
     const auto VelocityNormalized = GetVelocity().GetSafeNormal();
     const auto AngleBetween = FMath::Acos(FVector::DotProduct(GetActorForwardVector(), VelocityNormalized));
     const auto CrossProduct = FVector::CrossProduct(GetActorForwardVector(), VelocityNormalized);
@@ -62,8 +62,6 @@ void ATPSBaseCharacter::BeginPlay()
     HealthComponent->OnHealthChanged.AddUObject(this, &ATPSBaseCharacter::OnHealthChanged);
 
     LandedDelegate.AddDynamic(this, &ATPSBaseCharacter::OnGroundLanded);
-
-    SpawnWeapon();
 }
 
 // Called every frame
@@ -76,6 +74,7 @@ void ATPSBaseCharacter::Tick(float DeltaTime)
 void ATPSBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     check(PlayerInputComponent);
+    check(WeaponComponent);
     Super::SetupPlayerInputComponent(PlayerInputComponent);
     PlayerInputComponent->BindAxis("MoveForward", this, &ATPSBaseCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ATPSBaseCharacter::MoveRight);
@@ -84,20 +83,19 @@ void ATPSBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ATPSBaseCharacter::Jump);
     PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ATPSBaseCharacter::OnStartSprnting);
     PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ATPSBaseCharacter::OnEndSprinting);
+    PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UTPSWeaponComponent::Fire);
 }
 
 void ATPSBaseCharacter::MoveForward(float Amount)
 {
     isMovingForward = Amount > 0.0f;
-    if (Amount == 0.0f)
-        return;
+    if (Amount == 0.0f) return;
     AddMovementInput(GetActorForwardVector(), Amount);
 }
 
 void ATPSBaseCharacter::MoveRight(float Amount)
 {
-    if (Amount == 0.0f)
-        return;
+    if (Amount == 0.0f) return;
     AddMovementInput(GetActorRightVector(), Amount);
 }
 
@@ -138,15 +136,4 @@ void ATPSBaseCharacter::OnGroundLanded(const FHitResult& HitResult)
     const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
     UE_LOG(TPSBaseCharacterLog, Display, TEXT("Final Damage: %f"), FinalDamage);
     TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
-}
-
-void ATPSBaseCharacter::SpawnWeapon()
-{
-    if (!GetWorld()) return;
-    const auto Weapon = GetWorld()->SpawnActor<ATPSBaseWeapon>(WeaponClass);
-    if (Weapon)
-    {
-        FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
-        Weapon->AttachToComponent(GetMesh(), AttachmentRules, "WeaponSocket");
-    }
 }

@@ -16,6 +16,8 @@ class TPS_CPP_API ATPSBaseWeapon : public AActor
 public:
     ATPSBaseWeapon();
 
+    virtual void Fire();
+
 protected:
     virtual void BeginPlay() override;
 
