@@ -8,6 +8,7 @@
 #include "Components/TPSHealthComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/TPSWeaponComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Controller.h"
 
 DEFINE_LOG_CATEGORY_STATIC(TPSBaseCharacterLog, All, All);
@@ -119,6 +120,7 @@ void ATPSBaseCharacter::OnDeath()
     {
         Controller->ChangeState(NAME_Spectating);
     }
+    GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
 }
 
 void ATPSBaseCharacter::OnHealthChanged(float Health) const

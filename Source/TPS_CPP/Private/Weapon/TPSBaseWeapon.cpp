@@ -64,9 +64,18 @@ bool ATPSBaseWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
 void ATPSBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd)
 {
     if (!GetWorld()) return;
+    
     FCollisionQueryParams CollisionQueryParams;
     CollisionQueryParams.AddIgnoredActor(GetOwner());
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
+}
+
+void ATPSBaseWeapon::MakeDamage(FHitResult& HitResult)
+{
+    const auto DamagedActor = HitResult.GetActor();
+    if (!DamagedActor) return;
+
+    DamagedActor->TakeDamage(DamageAmount, FDamageEvent{}, GetPlayerController(), this);
 }
 
 void ATPSBaseWeapon::MakeShot()
@@ -85,6 +94,7 @@ void ATPSBaseWeapon::MakeShot()
     if (AngleInDegrees > MaxPossibleAngleBetweenTargetAndMuzzle) return;
     if (HitResult.bBlockingHit)
     {
+        MakeDamage(HitResult);
         DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), ActualTraceEnd, FColor::Red, false, 3.0f, 0, 3);
         DrawDebugSphere(GetWorld(), ActualTraceEnd, 13.0f, 24, FColor::Red, false, 5.0f);
         UE_LOG(LogTPSBaseWeapon, Display, TEXT("BONE %s HAS BEEN HIT!"), *HitResult.BoneName.ToString());
